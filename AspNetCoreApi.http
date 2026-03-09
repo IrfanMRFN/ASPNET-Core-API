@@ -1,7 +1,7 @@
 @AspNetCoreApi_HostAddress = http://localhost:5116
 
 ### Test the Root Endpoint
-Get {{AspNetCoreApi_HostAddress}}/
+Get {{AspNetCoreApi_HostAddress}}/api/accounts
 
 ### Test the JSON Status Endpoint
-Get {{AspNetCoreApi_HostAddress}}/api/status
+Get {{AspNetCoreApi_HostAddress}}/api/accounts/2
