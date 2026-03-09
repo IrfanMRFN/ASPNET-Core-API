@@ -4,4 +4,12 @@
 Get {{AspNetCoreApi_HostAddress}}/api/accounts
 
 ### Test the JSON Status Endpoint
-Get {{AspNetCoreApi_HostAddress}}/api/accounts/1
+Get {{AspNetCoreApi_HostAddress}}/api/accounts/3
+
+### Create a brand new account
+POST {{AspNetCoreApi_HostAddress}}/api/accounts
+Content-Type: application/json
+
+{
+    "accountHolder": "Budi Santoso"
+}

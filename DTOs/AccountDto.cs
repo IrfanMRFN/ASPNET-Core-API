@@ -14,3 +14,8 @@ public class TransactionDto
     public decimal Amount { get; set; }
     public DateTime CreatedAt { get; set; }
 }
+
+public class CreateAccountDto
+{
+    public required string AccountHolder { get; set; }
+}
