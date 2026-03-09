@@ -4,4 +4,4 @@
 Get {{AspNetCoreApi_HostAddress}}/api/accounts
 
 ### Test the JSON Status Endpoint
-Get {{AspNetCoreApi_HostAddress}}/api/accounts/2
+Get {{AspNetCoreApi_HostAddress}}/api/accounts/1

@@ -1,6 +1,6 @@
 using AspNetCoreApi.Data;
+using AspNetCoreApi.DTOs;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +9,6 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddDbContext<BankContext>(options =>
     options.UseSqlServer(connectionString));
-
-builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-{
-   options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; 
-});
 
 var app = builder.Build();
 
@@ -45,7 +40,20 @@ app.MapGet("/api/accounts/{id}", async (int id, BankContext db) =>
         return Results.NotFound(new { Message = $"Account with ID {id} not found." });
     }
 
-    return Results.Ok(account);
+    var responseDto = new AccountDto
+    {
+        Id = account.Id,
+        AccountHolder = account.AccountHolder,
+        Balance = account.Balance,
+        Transactions = account.Transactions.Select(tx => new TransactionDto
+        {
+            Id = tx.Id,
+            Amount = tx.Amount,
+            CreatedAt = tx.CreatedAt
+        }).ToList()
+    };
+
+    return Results.Ok(responseDto);
 });
 
 await app.RunAsync();
