@@ -13,3 +13,11 @@ Content-Type: application/json
 {
     "accountHolder": "Budi Santoso"
 }
+
+### Deposit money into Budi's account
+PUT {{AspNetCoreApi_HostAddress}}/api/accounts/2/deposit
+Content-Type: application/json
+
+{
+    "amount": 500000
+}

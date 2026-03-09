@@ -64,7 +64,7 @@ app.MapPost("/api/Accounts", async (CreateAccountDto newAccountRequest, BankCont
     // Validation
     if (string.IsNullOrWhiteSpace(newAccountRequest.AccountHolder))
     {
-        return Results.BadRequest(new { Message = "Account Holder name is required."});
+        return Results.BadRequest(new { Message = "Account Holder name is required." });
     }
 
     // Mapping request
@@ -89,6 +89,51 @@ app.MapPost("/api/Accounts", async (CreateAccountDto newAccountRequest, BankCont
 
     // Return 201 Created status, the location of the new resource and the data
     return Results.Created($"api/accounts/{newDbAccount.Id}", responseDto);
+});
+
+// Endpoint 4: Deposit money into an account (PUT)
+app.MapPut("/api/accounts/{id}/deposit", async (int id, DepositDto depositRequest, BankContext db) =>
+{
+    // Validation
+    if (depositRequest.Amount <= 0)
+    {
+        return Results.BadRequest(new { Message = "Deposit amount must be greater than zero."});
+    }
+
+    // Read
+    var account = await db.Accounts.FindAsync(id);
+    if (account == null)
+    {
+        return Results.NotFound(new { Message = $"Account with ID {id} not found."});
+    }
+
+    // Update
+    account.Balance += depositRequest.Amount;
+
+    // Create transaction record
+    var newTransaction = new Transaction
+    {
+        Amount = depositRequest.Amount,
+        AccountId = account.Id,
+        CreatedAt = DateTime.UtcNow
+    };
+
+    // Track and Commit changes
+    db.Transactions.Add(newTransaction);
+    await db.SaveChangesAsync();
+
+    // Response
+    var responseDto = new AccountDto
+    {
+        Id = account.Id,
+        AccountHolder = account.AccountHolder,
+        Balance = account.Balance,
+
+        // Skip loading the full transaction history to keep the response fast and lightweight
+        Transactions = []
+    };
+
+    return Results.Ok(new { Message = "Deposit successful", Account = responseDto });
 });
 
 await app.RunAsync();
