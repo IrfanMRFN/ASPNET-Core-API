@@ -136,4 +136,25 @@ app.MapPut("/api/accounts/{id}/deposit", async (int id, DepositDto depositReques
     return Results.Ok(new { Message = "Deposit successful", Account = responseDto });
 });
 
+// Endpoint 5: Close an account (DELETE)
+app.MapDelete("/api/accounts/{id}", async (int id, BankContext db) =>
+{
+    // Read
+    var account = await db.Accounts.FindAsync(id);
+
+    if (account == null)
+    {
+        return Results.NotFound(new { Message = $"Account with ID {id} not found."});
+    }
+
+    // Delete and Commit
+    // EF Core will automatically cascade this delete to all related transactions
+    db.Accounts.Remove(account);
+    await db.SaveChangesAsync();
+
+    // Response
+    // 204 No Content status is the standard indicating "Action succeeded, but there is no data left to show."
+    return Results.NoContent();
+});
+
 await app.RunAsync();

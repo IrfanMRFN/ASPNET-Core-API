@@ -21,3 +21,6 @@ Content-Type: application/json
 {
     "amount": 500000
 }
+
+### Close Budi's account permanently
+DELETE {{AspNetCoreApi_HostAddress}}/api/accounts/2
